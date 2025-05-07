@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wireframes POS MVP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Estilos adicionales para simular wireframes */
+      .wireframe-section {
+        border: 2px dashed #cbd5e1; /* slate-300 */
+        padding: 1rem; /* p-4 */
+        margin-bottom: 1rem; /* mb-4 */
+        border-radius: 0.5rem; /* rounded-lg */
+        background-color: #f8fafc; /* slate-50 */
+      }
+      .wireframe-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50; /* Asegura que esté por encima */
+      }
+      .wireframe-modal-content {
+        background-color: white;
+        padding: 2rem; /* p-8 */
+        border-radius: 0.5rem; /* rounded-lg */
+        min-width: 300px;
+        max-width: 90%;
+      }
+      .hidden-view {
+        display: none;
+      }
+      .product-card {
+        border: 1px solid #e2e8f0; /* slate-200 */
+        padding: 0.75rem; /* p-3 */
+        border-radius: 0.375rem; /* rounded-md */
+        text-align: center;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+      .product-card:hover {
+        background-color: #f1f5f9; /* slate-100 */
+      }
+      .transaction-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0; /* py-2 */
+        border-bottom: 1px solid #e2e8f0; /* slate-200 */
+        font-size: 0.875rem; /* text-sm */
+      }
+      .table th,
+      .table td {
+        border: 1px solid #e2e8f0; /* slate-200 */
+        padding: 0.5rem; /* p-2 */
+        text-align: left;
+      }
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem; /* mt-4 */
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 font-sans p-4">
+    <nav class="bg-white p-3 rounded-lg shadow mb-6 flex space-x-2">
+      <button
+        onclick="showView('login')"
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Login
+      </button>
+      <button
+        onclick="showView('venta')"
+        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Venta Principal
+      </button>
+      <button
+        onclick="showView('gestion')"
+        class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Gestión Productos
+      </button>
+      <button
+        onclick="showView('reportes')"
+        class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Reportes
+      </button>
+    </nav>
+
+    <div id="view-container">
+      <div id="login" class="view-content wireframe-section max-w-md mx-auto">
+        <h2 class="text-xl font-semibold mb-4 text-center">
+          Iniciar Sesión - POS
+        </h2>
+        <form>
+          <div class="mb-4">
+            <label
+              for="username"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Usuario</label
+            >
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Ingrese su usuario"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div class="mb-6">
+            <label
+              for="password"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Contraseña</label
+            >
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Ingrese su contraseña"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <button
+            type="button"
+            onclick="showView('venta')"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Ingresar
+          </button>
+          <p class="text-red-500 text-sm mt-2 text-center hidden">
+            Error: Usuario o contraseña incorrectos.
+          </p>
+        </form>
+      </div>
+
+      <div id="venta" class="view-content hidden-view">
+        <div class="flex flex-col md:flex-row gap-4">
+          <div class="w-full md:w-2/3 wireframe-section">
+            <h3 class="text-lg font-medium mb-3">Productos</h3>
+            <div class="flex flex-col sm:flex-row gap-2 mb-4">
+              <input
+                type="search"
+                placeholder="Buscar por nombre o SKU..."
+                class="flex-grow p-2 border border-gray-300 rounded"
+              />
+              <div class="flex gap-1">
+                <button
+                  class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-3 rounded text-sm"
+                >
+                  Todas Cat.
+                </button>
+                <button
+                  class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-3 rounded text-sm"
+                >
+                  Ropa
+                </button>
+                <button
+                  class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-3 rounded text-sm"
+                >
+                  Calzado
+                </button>
+                <button
+                  class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-3 rounded text-sm"
+                >
+                  Accesorios
+                </button>
+              </div>
+            </div>
+
+            <div
+              class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3"
+            >
+              <div class="product-card" onclick="showModal('modal-variantes')">
+                <div
+                  class="bg-gray-200 h-20 mb-2 rounded flex items-center justify-center text-gray-500"
+                >
+                  [Imagen Prod.]
+                </div>
+                <p class="font-semibold text-sm">Camisa Polo</p>
+                <p class="text-xs text-gray-600">$25.000</p>
+              </div>
+              <div class="product-card" onclick="showModal('modal-variantes')">
+                <div
+                  class="bg-gray-200 h-20 mb-2 rounded flex items-center justify-center text-gray-500"
+                >
+                  [Imagen Prod.]
+                </div>
+                <p class="font-semibold text-sm">Pantalón Vaquero</p>
+                <p class="text-xs text-gray-600">$80.000</p>
+              </div>
+              <div class="product-card">
+                <div
+                  class="bg-gray-200 h-20 mb-2 rounded flex items-center justify-center text-gray-500"
+                >
+                  [Imagen Prod.]
+                </div>
+                <p class="font-semibold text-sm">Gorra Básica</p>
+                <p class="text-xs text-gray-600">$15.000</p>
+              </div>
+              <div class="product-card" onclick="showModal('modal-variantes')">
+                <div
+                  class="bg-gray-200 h-20 mb-2 rounded flex items-center justify-center text-gray-500"
+                >
+                  [Imagen Prod.]
+                </div>
+                <p class="font-semibold text-sm">Zapatos Deportivos</p>
+                <p class="text-xs text-gray-600">$120.000</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="w-full md:w-1/3 wireframe-section flex flex-col">
+            <h3 class="text-lg font-medium mb-3">Transacción Actual</h3>
+            <div class="flex-grow overflow-y-auto mb-4 border-b pb-2">
+              <div class="transaction-item">
+                <span>Camisa Polo (M, Azul) x 1</span>
+                <span>$25.000</span>
+              </div>
+              <div class="transaction-item">
+                <span>Pantalón Vaquero (32, Negro) x 1</span>
+                <span>$80.000</span>
+              </div>
+              <div class="transaction-item">
+                <span>Gorra Básica x 2</span>
+                <span>$30.000</span>
+              </div>
+            </div>
+            <div class="space-y-1 text-sm mb-4">
+              <div class="flex justify-between">
+                <span>Subtotal:</span><span>$135.000</span>
+              </div>
+              <div class="flex justify-between">
+                <span>IVA (19%):</span><span>$25.650</span>
+              </div>
+              <div class="flex justify-between text-lg font-bold">
+                <span>Total:</span><span>$160.650</span>
+              </div>
+              <div class="flex justify-between text-red-600 hidden">
+                <span>Descuento:</span><span>-$16.065 (10%)</span>
+              </div>
+            </div>
+            <div class="mt-auto space-y-2">
+              <button
+                onclick="showModal('modal-descuento')"
+                class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded text-sm"
+              >
+                Aplicar Descuento
+              </button>
+              <button
+                onclick="showModal('modal-pago')"
+                class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded text-lg"
+              >
+                Pagar
+              </button>
+              <button
+                class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded text-sm"
+              >
+                Anular Venta
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="gestion" class="view-content hidden-view wireframe-section">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-semibold">Gestión de Productos</h2>
+          <button
+            onclick="showModal('modal-nuevo-producto')"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            + Nuevo Producto
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="table">
+            <thead>
+              <tr class="bg-gray-100">
+                <th>SKU Base</th>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Variantes</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>CAM-POL</td>
+                <td>Camisa Polo</td>
+                <td>Ropa</td>
+                <td>4 (S, M, L, XL / Azul, Blanco)</td>
+                <td>
+                  <button class="text-blue-600 hover:underline text-sm">
+                    Editar
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>PANT-VAQ</td>
+                <td>Pantalón Vaquero</td>
+                <td>Ropa</td>
+                <td>6 (30, 32, 34 / Azul, Negro)</td>
+                <td>
+                  <button class="text-blue-600 hover:underline text-sm">
+                    Editar
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>GOR-BAS</td>
+                <td>Gorra Básica</td>
+                <td>Accesorios</td>
+                <td>1 (Única)</td>
+                <td>
+                  <button class="text-blue-600 hover:underline text-sm">
+                    Editar
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="reportes" class="view-content hidden-view wireframe-section">
+        <h2 class="text-xl font-semibold mb-4">Reporte de Ventas (Hoy)</h2>
+        <div class="bg-white p-4 rounded shadow mb-4">
+          <h3 class="font-medium mb-2">Resumen del Día (04/05/2025)</h3>
+          <p>Total Ventas: <span class="font-bold">$1.250.300</span></p>
+          <p>Número de Transacciones: <span class="font-bold">15</span></p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="table">
+            <thead>
+              <tr class="bg-gray-100">
+                <th>ID Venta</th>
+                <th>Fecha y Hora</th>
+                <th>Cajero</th>
+                <th>Total</th>
+                <th>Método Pago</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>V0015</td>
+                <td>2025-05-04 12:15:30</td>
+                <td>cajero1</td>
+                <td>$160.650</td>
+                <td>Efectivo</td>
+              </tr>
+              <tr>
+                <td>V0014</td>
+                <td>2025-05-04 11:55:01</td>
+                <td>cajero1</td>
+                <td>$85.000</td>
+                <td>Tarjeta</td>
+              </tr>
+              <tr>
+                <td>V0013</td>
+                <td>2025-05-04 11:30:15</td>
+                <td>cajero2</td>
+                <td>$210.000</td>
+                <td>Efectivo</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div
+      id="modal-variantes"
+      class="wireframe-modal-overlay hidden-view"
+      onclick="closeModalOnClickOutside(event, 'modal-variantes')"
+    >
+      <div class="wireframe-modal-content">
+        <h3 class="text-lg font-semibold mb-4">
+          Seleccionar Variante: Camisa Polo
+        </h3>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Talla:</label
+          >
+          <div class="flex gap-2">
+            <button
+              class="border border-gray-300 py-1 px-3 rounded hover:bg-gray-100 focus:bg-blue-200 focus:outline-none"
+            >
+              S <span class="text-xs text-gray-500">(5)</span>
+            </button>
+            <button
+              class="border border-gray-300 py-1 px-3 rounded hover:bg-gray-100 focus:bg-blue-200 focus:outline-none"
+            >
+              M <span class="text-xs text-gray-500">(8)</span>
+            </button>
+            <button
+              class="border border-gray-300 py-1 px-3 rounded hover:bg-gray-100 focus:bg-blue-200 focus:outline-none"
+            >
+              L <span class="text-xs text-gray-500">(3)</span>
+            </button>
+            <button
+              class="border border-gray-300 py-1 px-3 rounded text-gray-400 cursor-not-allowed"
+              disabled
+            >
+              XL <span class="text-xs">(0)</span>
+            </button>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1"
+            >Color:</label
+          >
+          <div class="flex gap-2">
+            <button
+              class="border border-gray-300 py-1 px-3 rounded hover:bg-gray-100 focus:bg-blue-200 focus:outline-none"
+            >
+              Azul <span class="text-xs text-gray-500">(10)</span>
+            </button>
+            <button
+              class="border border-gray-300 py-1 px-3 rounded hover:bg-gray-100 focus:bg-blue-200 focus:outline-none"
+            >
+              Blanco <span class="text-xs text-gray-500">(6)</span>
+            </button>
+          </div>
+        </div>
+        <div class="mb-6">
+          <label
+            for="qty-variante"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Cantidad:</label
+          >
+          <input
+            type="number"
+            id="qty-variante"
+            value="1"
+            min="1"
+            class="w-20 p-2 border border-gray-300 rounded"
+          />
+        </div>
+        <div class="flex justify-end gap-2">
+          <button
+            onclick="hideModal('modal-variantes')"
+            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+          >
+            Cancelar
+          </button>
+          <button
+            onclick="hideModal('modal-variantes')"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Agregar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="modal-pago"
+      class="wireframe-modal-overlay hidden-view"
+      onclick="closeModalOnClickOutside(event, 'modal-pago')"
+    >
+      <div class="wireframe-modal-content">
+        <h3 class="text-lg font-semibold mb-4">Procesar Pago</h3>
+        <p class="mb-4 text-xl font-bold">Total a Pagar: $160.650</p>
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2"
+            >Método de Pago:</label
+          >
+          <div class="flex gap-3">
+            <button
+              class="flex-1 border border-gray-300 py-2 px-4 rounded hover:bg-gray-100 focus:bg-blue-200 focus:outline-none"
+            >
+              Efectivo
+            </button>
+            <button
+              class="flex-1 border border-gray-300 py-2 px-4 rounded hover:bg-gray-100 focus:bg-blue-200 focus:outline-none"
+            >
+              Tarjeta
+            </button>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label
+            for="monto-recibido"
+            class="block text-sm font-medium text-gray-700 mb-1"
+            >Monto Recibido (Efectivo):</label
+          >
+          <input
+            type="number"
+            id="monto-recibido"
+            placeholder="0.00"
+            class="w-full p-2 border border-gray-300 rounded"
+          />
+        </div>
+        <p class="mb-6 text-lg">Cambio: <span class="font-bold">$0.00</span></p>
+        <div class="flex justify-end gap-2">
+          <button
+            onclick="hideModal('modal-pago')"
+            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+          >
+            Cancelar
+          </button>
+          <button
+            onclick="hideModal('modal-pago')"
+            class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Finalizar Venta
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="modal-descuento"
+      class="wireframe-modal-overlay hidden-view"
+      onclick="closeModalOnClickOutside(event, 'modal-descuento')"
+    >
+      <div class="wireframe-modal-content">
+        <h3 class="text-lg font-semibold mb-4">
+          Aplicar Descuento (Sobre Total)
+        </h3>
+        <div class="flex gap-2 mb-4">
+          <div class="flex-1">
+            <label
+              for="desc-porcentaje"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Porcentaje (%):</label
+            >
+            <input
+              type="number"
+              id="desc-porcentaje"
+              placeholder="Ej: 10"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div class="flex-1">
+            <label
+              for="desc-monto"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Monto Fijo ($):</label
+            >
+            <input
+              type="number"
+              id="desc-monto"
+              placeholder="Ej: 5000"
+              class="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+        </div>
+        <div class="flex justify-end gap-2">
+          <button
+            onclick="hideModal('modal-descuento')"
+            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+          >
+            Cancelar
+          </button>
+          <button
+            onclick="hideModal('modal-descuento')"
+            class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded"
+          >
+            Aplicar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="modal-nuevo-producto"
+      class="wireframe-modal-overlay hidden-view"
+      onclick="closeModalOnClickOutside(event, 'modal-nuevo-producto')"
+    >
+      <div class="wireframe-modal-content max-w-2xl">
+        <h3 class="text-lg font-semibold mb-4">Crear Nuevo Producto</h3>
+
+        <div class="border p-3 rounded mb-3">
+          <h4 class="font-medium mb-2 text-sm">Información Base</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1"
+                >Nombre Producto</label
+              >
+              <input
+                type="text"
+                placeholder="Ej: Camiseta Estampada"
+                class="w-full p-1 border border-gray-300 rounded text-sm"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1"
+                >Categoría</label
+              >
+              <select class="w-full p-1 border border-gray-300 rounded text-sm">
+                <option>Ropa</option>
+                <option>Calzado</option>
+                <option>Accesorios</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1"
+                >SKU Base (Opcional)</label
+              >
+              <input
+                type="text"
+                placeholder="Ej: CAM-EST"
+                class="w-full p-1 border border-gray-300 rounded text-sm"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="border p-3 rounded mb-3">
+          <h4 class="font-medium mb-2 text-sm">
+            Opciones y Valores (para Variantes)
+          </h4>
+          <div class="space-y-2">
+            <div>
+              <input
+                type="text"
+                value="Talla"
+                class="p-1 border border-gray-300 rounded text-sm mr-2"
+              />
+              <input
+                type="text"
+                placeholder="Valores separados por coma: S, M, L, XL"
+                class="flex-grow p-1 border border-gray-300 rounded text-sm"
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                value="Color"
+                class="p-1 border border-gray-300 rounded text-sm mr-2"
+              />
+              <input
+                type="text"
+                placeholder="Valores separados por coma: Rojo, Azul, Verde"
+                class="flex-grow p-1 border border-gray-300 rounded text-sm"
+              />
+            </div>
+          </div>
+          <button class="text-blue-600 hover:underline text-xs mt-2">
+            + Añadir otra opción
+          </button>
+        </div>
+
+        <div class="border p-3 rounded mb-4">
+          <h4 class="font-medium mb-2 text-sm">Variantes Generadas</h4>
+          <p class="text-xs text-gray-600 mb-2">
+            Define SKU, Precio y Stock para cada combinación.
+          </p>
+          <div class="max-h-40 overflow-y-auto">
+            <table class="table text-xs">
+              <thead>
+                <tr>
+                  <th>Talla</th>
+                  <th>Color</th>
+                  <th>SKU Variante</th>
+                  <th>Precio Venta</th>
+                  <th>Stock Inicial</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>S</td>
+                  <td>Rojo</td>
+                  <td><input type="text" class="w-20 p-1 border" /></td>
+                  <td><input type="number" class="w-20 p-1 border" /></td>
+                  <td><input type="number" class="w-16 p-1 border" /></td>
+                </tr>
+                <tr>
+                  <td>S</td>
+                  <td>Azul</td>
+                  <td><input type="text" class="w-20 p-1 border" /></td>
+                  <td><input type="number" class="w-20 p-1 border" /></td>
+                  <td><input type="number" class="w-16 p-1 border" /></td>
+                </tr>
+                <tr>
+                  <td>M</td>
+                  <td>Rojo</td>
+                  <td><input type="text" class="w-20 p-1 border" /></td>
+                  <td><input type="number" class="w-20 p-1 border" /></td>
+                  <td><input type="number" class="w-16 p-1 border" /></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2">
+          <button
+            onclick="hideModal('modal-nuevo-producto')"
+            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+          >
+            Cancelar
+          </button>
+          <button
+            onclick="hideModal('modal-nuevo-producto')"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Guardar Producto
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentView = "login"; // Vista inicial
+
+      function showView(viewId) {
+        // Ocultar vista actual
+        document.getElementById(currentView).classList.add("hidden-view");
+        // Mostrar nueva vista
+        document.getElementById(viewId).classList.remove("hidden-view");
+        currentView = viewId;
+      }
+
+      function showModal(modalId) {
+        document.getElementById(modalId).classList.remove("hidden-view");
+      }
+
+      function hideModal(modalId) {
+        document.getElementById(modalId).classList.add("hidden-view");
+      }
+
+      // Cierra el modal si se hace clic fuera de su contenido
+      function closeModalOnClickOutside(event, modalId) {
+        const modalOverlay = document.getElementById(modalId);
+        // Si el clic fue directamente sobre el overlay (fondo oscuro)
+        if (event.target === modalOverlay) {
+          hideModal(modalId);
+        }
+      }
+
+      // Mostrar la vista inicial al cargar
+      document.addEventListener("DOMContentLoaded", () => {
+        showView(currentView);
+      });
+    </script>
+  </body>
+</html>

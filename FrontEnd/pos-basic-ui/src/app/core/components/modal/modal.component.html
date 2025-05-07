@@ -1,0 +1,14 @@
+
+<ng-container *ngIf="shown">
+  <div
+        class="modal-overlay"
+        (click)="closeModal()"
+      >
+        <div class="modal-content">
+          <h3 class="text-lg font-semibold mb-4">
+            {{ title }}
+          </h3>
+          <ng-content></ng-content>
+        </div>
+      </div>
+</ng-container>
