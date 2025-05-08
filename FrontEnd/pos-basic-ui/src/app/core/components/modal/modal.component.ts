@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-modal',
@@ -11,14 +11,18 @@ export class ModalComponent {
   @Input({ required: true }) title;
   @Input({ required: true }) shown: boolean;
   @Output() shownChange = new EventEmitter<boolean>();
+  @ViewChild("overlay") overlay?: ElementRef;
 
   constructor() {
     this.title = '';
     this.shown = false;
   }
 
-  closeModal() {
-    this.shown = false;
-    this.shownChange.emit(this.shown);
+  closeModal(e: MouseEvent) {
+    if(e.target === this.overlay?.nativeElement)
+    {
+      this.shown = false;
+      this.shownChange.emit(this.shown);
+    }
   }
 }

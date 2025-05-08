@@ -1,25 +1,29 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ModalComponent } from '~core/components/modal/modal.component';
 import { Product } from '~features/products/types/product.type';
 import {
   ProductVariant,
   VariantOption,
 } from '~features/products/types/productVariant.type';
-import { SaleProductComponent } from '../sale-product/sale-product.component';
+import { Transaction } from '~features/sales/types/transaction.type';
 
 @Component({
   selector: 'app-sale-product-view',
-  imports: [CommonModule, ModalComponent, SaleProductComponent],
+  imports: [ReactiveFormsModule, CommonModule, ModalComponent],
   templateUrl: './sale-product-view.component.html',
   styleUrl: './sale-product-view.component.css',
 })
 export class SaleProductViewComponent {
   showProductDetail: boolean;
-  selectedProduct: Product | undefined;
-  variantSelected: ProductVariant | undefined;
+  selectedProduct?: Product;
+  variantSelected?: ProductVariant;
   currentVariantOptions: Record<string, VariantOption[]> = {};
   productList: Product[] = [];
+  variantFormGroup: FormGroup = new FormGroup({
+    quantity: new FormControl('1', [Validators.required, Validators.min(1)])
+  });
 
   constructor() {
     this.showProductDetail = false;
@@ -178,16 +182,24 @@ export class SaleProductViewComponent {
         ],
       },
     ];
+
+    this.variantFormGroup.valueChanges.subscribe((value) => this.getVariantSelected(value))
   }
 
-  toggleProductDetailModal(value: boolean | undefined, product: Product): void {
+  toggleProductDetailModal(value: boolean | undefined, product?: Product): void {
     this.showProductDetail = value ?? !this.showProductDetail;
     if (product) {
       this.selectedProduct = product;
-      this.currentVariantOptions = this.getOptionListByProduct(
-        this.selectedProduct
-      );
+      this.currentVariantOptions = this.getOptionListByProduct(this.selectedProduct);
+
+      Object.keys(this.currentVariantOptions).forEach((key) => {
+        this.variantFormGroup.addControl(key,
+          new FormControl(this.currentVariantOptions[key][0].variantValue , Validators.required)
+        );
+      });
     }
+
+    this.setDefaultFormValues();
   }
 
   getOptionListByProduct(product: Product): Record<string, VariantOption[]> {
@@ -212,5 +224,51 @@ export class SaleProductViewComponent {
       },
       {}
     );
+  }
+
+  getVariantSelected(value: Record<string, string>){
+    if(!this.currentVariantOptions) return;
+
+    const variantsSelected = !Object.keys(this.currentVariantOptions).some(control => value[control] === '' || !value[control])
+
+    if(!variantsSelected) return;
+
+    this.variantSelected = this.selectedProduct?.productVariants.find(variant => variant.variantOptions.every(option => option.option.variantValue === value[option.option.optionName]))
+
+    if(this.variantSelected){
+      this.variantFormGroup.controls['quantity'].addValidators(Validators.max(this.variantSelected.currentStock))
+    }
+
+
+
+  }
+
+  setDefaultFormValues(){
+    this.variantFormGroup.patchValue({
+      quantity: '1',
+      ...Object.fromEntries(
+          Object.keys(this.currentVariantOptions)
+            .map(key => [key, this.currentVariantOptions[key][0].variantValue])
+        )
+    })
+  }
+
+  @Output() addSale: EventEmitter<Transaction> = new EventEmitter()
+  addToSale(){
+    if(!this.variantSelected && !this.variantFormGroup.valid) return;
+
+    const transaction: Transaction = {
+      productVariant: this.variantSelected!,
+      product: this.selectedProduct!,
+      quantity: Number(this.variantFormGroup.controls['quantity'].value),
+      subtotal: 0,
+    }
+
+    transaction.subtotal = transaction.productVariant.price * transaction.quantity;
+
+    this.setDefaultFormValues()
+
+    this.addSale.emit(transaction)
+    this.toggleProductDetailModal(false)
   }
 }

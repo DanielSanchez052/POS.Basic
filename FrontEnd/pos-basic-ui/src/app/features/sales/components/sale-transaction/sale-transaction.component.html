@@ -1,30 +1,28 @@
   <h3 class="text-lg font-medium mb-3">Transacción Actual</h3>
   <div class="flex-grow overflow-y-auto mb-4 border-b pb-2">
-    <div class="transaction-item">
-      <span>Camisa Polo (M, Azul) x 1</span>
-      <span>$25.000</span>
-    </div>
-    <div class="transaction-item">
-      <span>Pantalón Vaquero (32, Negro) x 1</span>
-      <span>$80.000</span>
-    </div>
-    <div class="transaction-item">
-      <span>Gorra Básica x 2</span>
-      <span>$30.000</span>
-    </div>
+    @for (item of sale.transactions; track $index) {
+      <div class="transaction-item">
+        <span>{{ item.product.name }} x {{ item.quantity }}</span>
+        <span>{{ item.subtotal | currency: 'USD' }}</span>
+      </div>
+    }
+
   </div>
   <div class="space-y-1 text-sm mb-4">
     <div class="flex justify-between">
-      <span>Subtotal:</span><span>$135.000</span>
+      <span>Subtotal:</span><span>{{ sale.subtotal | currency: 'USD' }}</span>
     </div>
     <div class="flex justify-between">
-      <span>IVA (19%):</span><span>$25.650</span>
+      <span>IVA (19%):</span><span>{{ sale.iva | currency: 'USD' }}</span>
     </div>
     <div class="flex justify-between text-lg font-bold">
-      <span>Total:</span><span>$160.650</span>
+      <span>Total:</span><span>{{ sale.total | currency: 'USD' }}</span>
     </div>
     <div class="flex justify-between text-red-600 hidden">
-      <span>Descuento:</span><span>-$16.065 (10%)</span>
+      <span>Descuento:</span><span>
+        <!-- /-$16.065 (10%) -->
+        Not Implemented
+      </span>
     </div>
   </div>
   <div class="mt-auto space-y-2">
@@ -42,6 +40,7 @@
     </button>
     <button
       class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded text-sm"
+      (click)="setClearSale()"
     >
       Anular Venta
     </button>
